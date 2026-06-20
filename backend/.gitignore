@@ -1,0 +1,8 @@
+# Ignore third party packages
+node_modules/
+
+# Ignore local secrets containing cloud database passwords
+.env
+
+# Ignore temp file uploads
+uploads/
