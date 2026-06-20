@@ -1,5 +1,5 @@
 // ── SECURE STATE MANAGEMENT (Replaced localStorage with sessionStorage) ──
-const API = "http://localhost:3000";
+const API = "https://hopegive-backend.onrender.com";
 let authToken = sessionStorage.getItem("hg_token") || "";
 let authUser = JSON.parse(sessionStorage.getItem("hg_user") || "null");
 let currentCampaignId = null;
