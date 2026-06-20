@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HopeGive — Verified Donation Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══ NAVIGATION ══ -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo" onclick="showPage('home')" style="cursor:pointer">
+      <div class="logo-icon">❤</div>
+      HopeGive
+    </div>
+    <div class="nav-links">
+      <a class="nav-link active" id="nl-home" onclick="showPage('home')">Home</a>
+      <a class="nav-link" id="nl-campaigns" onclick="showPage('campaigns')">Campaigns</a>
+      <a class="nav-link" id="nl-how" onclick="showPage('how')">How It Works</a>
+      <a class="nav-link" id="nl-transparency" onclick="showPage('transparency')">Transparency</a>
+      <a class="nav-link" id="nl-admin" onclick="showPage('admin')" style="display:none">Admin</a>
+    </div>
+    <div class="nav-spacer"></div>
+    <div class="nav-actions">
+      <button class="btn btn-outline btn-sm" id="loginBtn" onclick="openModal('loginModal')">Sign in</button>
+      <button class="btn btn-primary btn-sm" id="registerBtn" onclick="openModal('registerModal')">Join</button>
+      <button class="btn" id="userMenuBtn" onclick="toggleUserMenu()">
+        <div class="avatar-sm" id="navAvatarTxt">?</div>
+        <span id="navUserName">User</span> ▾
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ PAGES ══ -->
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="container">
+      <div class="hero-eyebrow">🛡 India's most verified donation platform</div>
+      <h1>Every rupee reaches<br><em>who truly needs it</em></h1>
+      <p class="hero-sub">We verify every applicant's identity, need, and circumstances before accepting a single donation. Funds are disbursed directly to hospitals, colleges, and vendors — never as cash.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="showPage('campaigns')" style="padding:12px 28px;font-size:15px">Browse verified campaigns</button>
+        <button class="btn btn-outline" onclick="openApply()" style="padding:12px 28px;font-size:15px">Apply for aid</button>
+      </div>
+      <div class="stats-bar">
+        <div class="stat-item"><span class="stat-num" id="stat-raised">₹0</span><div class="stat-label">raised this month</div></div>
+        <div class="stat-item"><span class="stat-num" id="stat-beneficiaries">0</span><div class="stat-label">verified recipients</div></div>
+        <div class="stat-item"><span class="stat-num" id="stat-donors">0</span><div class="stat-label">trusted donors</div></div>
+        <div class="stat-item"><span class="stat-num">98.2%</span><div class="stat-label">fraud-free rate</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" style="background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="section-eyebrow">Why donors trust us</div>
+        <h2 class="section-title">Built to eliminate fraud</h2>
+      </div>
+      <div class="trust-grid">
+        <div class="trust-card"><div class="trust-icon">🆔</div><div><h4>Aadhaar + PAN KYC</h4><p>Every applicant is verified via DigiLocker. One application per identity — duplicates auto-rejected.</p></div></div>
+        <div class="trust-card"><div class="trust-icon">🔍</div><div><h4>Document AI check</h4><p>Uploaded documents are scanned for tampering, digital forgeries, and metadata inconsistencies.</p></div></div>
+        <div class="trust-card"><div class="trust-icon">🏘</div><div><h4>Field verification</h4><p>Volunteer agents visit applicants for claims above ₹50,000. Two community vouchers required for all.</p></div></div>
+        <div class="trust-card"><div class="trust-icon">📊</div><div><h4>Need-score allocation</h4><p>An independent committee scores each case 0–100. Score determines max approvable — not what's requested.</p></div></div>
+        <div class="trust-card"><div class="trust-icon">🏦</div><div><h4>Escrow holding</h4><p>All funds held in regulated escrow. Never released until vendor invoice is confirmed.</p></div></div>
+        <div class="trust-card"><div class="trust-icon">🧾</div><div><h4>Direct vendor payout</h4><p>Money goes straight to hospitals, colleges, or suppliers. No cash ever reaches the applicant.</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:1.5rem">
+        <div><div class="section-eyebrow">Open causes</div><h2 class="section-title">Verified campaigns</h2></div>
+        <button class="btn btn-outline btn-sm" onclick="showPage('campaigns')">See all →</button>
+      </div>
+      <div class="grid-3" id="homeCampaigns">
+        <div class="card" style="text-align:center;color:var(--text-muted);padding:3rem">Loading…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CAMPAIGNS -->
+<div class="page" id="page-campaigns">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 0">
+    <div class="container">
+      <h1 style="font-size:2rem;margin-bottom:.5rem">Verified campaigns</h1>
+      <p style="color:var(--text-secondary)">Every campaign below has passed our 5-step verification. Your donation goes into escrow until disbursement is confirmed.</p>
+      <div style="display:flex;gap:8px;margin-top:1.5rem;flex-wrap:wrap">
+        <button class="badge badge-teal" style="cursor:pointer" onclick="filterCampaigns('all')">All</button>
+        <button class="badge badge-info" style="cursor:pointer" onclick="filterCampaigns('medical')">Medical</button>
+        <button class="badge badge-purple" style="cursor:pointer" onclick="filterCampaigns('education')">Education</button>
+        <button class="badge badge-warning" style="cursor:pointer" onclick="filterCampaigns('disaster')">Disaster relief</button>
+        <button class="badge badge-success" style="cursor:pointer" onclick="filterCampaigns('livelihood')">Livelihood</button>
+      </div>
+    </div>
+  </div>
+  <div class="container section">
+    <div class="grid-3" id="campaignGrid">
+      <div class="card" style="text-align:center;color:var(--text-muted);padding:3rem">Loading campaigns…</div>
+    </div>
+    <div id="noCampaigns" style="display:none;text-align:center;padding:4rem;color:var(--text-muted)">
+      <div style="font-size:3rem;margin-bottom:1rem">🔍</div>
+      <p>No campaigns found in this category.</p>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="page" id="page-how">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:3rem 0">
+    <div class="container" style="max-width:760px">
+      <div class="section-eyebrow">The system</div>
+      <h1 style="font-size:2.5rem;margin-bottom:.75rem">How we prevent fraud</h1>
+      <p style="font-size:17px;color:var(--text-secondary)">HopeGive uses a 5-layer verification process with escrow disbursement to ensure every rupee reaches a genuinely needy person.</p>
+    </div>
+  </div>
+  <div class="section">
+    <div class="container" style="max-width:760px">
+      <h2 style="margin-bottom:1.5rem">For applicants</h2>
+      <div class="verify-step"><div class="verify-step-num">1</div><div class="verify-step-content"><h4>Identity verification (KYC)</h4><p>Aadhaar + PAN verified via DigiLocker API. Biometric liveness check prevents impersonation. One application per verified identity — duplicates auto-rejected and flagged.</p></div></div>
+      <div class="verify-step"><div class="verify-step-num">2</div><div class="verify-step-content"><h4>Document authenticity check</h4><p>AI model scans every uploaded document for tampering, digital forgeries, and metadata inconsistencies. Medical documents are cross-verified against hospital registration numbers.</p></div></div>
+      <div class="verify-step"><div class="verify-step-num">3</div><div class="verify-step-content"><h4>Field verification & community vouching</h4><p>Volunteer field agents visit applicants in person for all claims above ₹50,000. For lower amounts, 2 community vouchers from verified neighbours or local officials are required.</p></div></div>
+      <div class="verify-step"><div class="verify-step-num">4</div><div class="verify-step-content"><h4>Need-based scoring & amount cap</h4><p>An independent review committee assigns a need score (0–100) based on income level, dependants, severity of situation, and existing assets. This score determines the maximum approvable amount — not what the applicant requests.</p></div></div>
+      <div class="verify-step"><div class="verify-step-num">5</div><div class="verify-step-content"><h4>Direct vendor disbursement</h4><p>Funds are <strong>never</strong> transferred as cash to the beneficiary. Payments go directly to hospitals, colleges, or suppliers. All transactions are publicly logged on the Transparency page.</p></div></div>
+
+      <div class="divider"></div>
+      <h2 style="margin-bottom:1.5rem">Additional safeguards</h2>
+      <div class="grid-2">
+        <div class="card card-sm"><strong style="font-size:13px">⏱ 48-hour cooling period</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">Before any campaign goes live, allowing the system to surface duplicate or suspicious claims.</p></div>
+        <div class="card card-sm"><strong style="font-size:13px">🚩 Community flagging</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">Any user can flag a campaign. Three flags auto-pause it for re-review immediately.</p></div>
+        <div class="card card-sm"><strong style="font-size:13px">🧾 Spending receipts</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">Beneficiaries must upload vendor invoices within 7 days of disbursement. Unspent funds are refunded to donors.</p></div>
+        <div class="card card-sm"><strong style="font-size:13px">🔄 18-month re-apply wait</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">Verified beneficiaries must wait 18 months and prove changed circumstances before reapplying.</p></div>
+        <div class="card card-sm"><strong style="font-size:13px">🔒 Escrow holding</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">All donated funds are held in a regulated escrow account and never touched until disbursement is approved.</p></div>
+        <div class="card card-sm"><strong style="font-size:13px">📋 Legal declaration</strong><p style="font-size:13px;color:var(--text-secondary);margin-top:6px">All applicants sign a legal declaration that false information is a criminal offence under IPC Section 420.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TRANSPARENCY -->
+<div class="page" id="page-transparency">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 0">
+    <div class="container">
+      <h1 style="font-size:2rem;margin-bottom:.5rem">Public disbursement ledger</h1>
+      <p style="color:var(--text-secondary)">Every rupee paid out, who received it, and what it was for — publicly logged and immutable.</p>
+    </div>
+  </div>
+  <div class="container section">
+    <div class="grid-4" style="margin-bottom:2rem" id="transpStats">
+      <div class="metric-card"><div class="metric-num" id="ts-raised">-</div><div class="metric-label">Total raised</div></div>
+      <div class="metric-card"><div class="metric-num" id="ts-disbursed">-</div><div class="metric-label">Total disbursed</div></div>
+      <div class="metric-card"><div class="metric-num" id="ts-escrow">-</div><div class="metric-label">In escrow</div></div>
+      <div class="metric-card"><div class="metric-num" id="ts-donors">-</div><div class="metric-label">Total donors</div></div>
+    </div>
+    <h3 style="margin-bottom:1rem;font-family:'Inter',sans-serif;font-size:15px;font-weight:600">All disbursements</h3>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="table-wrap">
+        <table id="disbTable">
+          <thead><tr><th>Date</th><th>Campaign</th><th>Amount</th><th>Vendor</th><th>Invoice #</th><th>Description</th></tr></thead>
+          <tbody id="disbTableBody"><tr><td colspan="6" style="text-align:center;color:var(--text-muted);padding:2rem">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APPLY -->
+<div class="page" id="page-apply">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:2rem 0">
+    <div class="container" style="max-width:700px">
+      <h1 style="font-size:2rem;margin-bottom:.5rem">Apply for aid</h1>
+      <p style="color:var(--text-secondary)">Fill in all three steps honestly. Your application is reviewed by a human committee — not automated. False declarations are a criminal offence.</p>
+    </div>
+  </div>
+  <div class="container section" style="max-width:700px">
+    <div class="apply-steps">
+      <div class="apply-step active" id="astep-1"><div class="step-num">1</div><span>Your identity</span></div>
+      <div class="apply-step" id="astep-2"><div class="step-num">2</div><span>Your cause</span></div>
+      <div class="apply-step" id="astep-3"><div class="step-num">3</div><span>Documents</span></div>
+    </div>
+    <div class="alert alert-info" style="margin-bottom:1.5rem"><span class="alert-icon">ℹ</span> Applications open for donations only after full verification. No funds are collected during review.</div>
+
+    <!-- Step 1 -->
+    <div class="step-form active" id="aform-1">
+      <div class="form-section"><div class="form-section-title">Identity details</div>
+        <div class="form-grid">
+          <div class="form-row"><label>Full name (as per Aadhaar)</label><input id="a_name" placeholder="Meera Sharma"></div>
+          <div class="form-row"><label>Email address</label><input id="a_email" type="email" placeholder="you@example.com"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Mobile number</label><input id="a_mobile" type="tel" placeholder="+91 98765 43210"></div>
+          <div class="form-row"><label>Password (min 8 chars)</label><input id="a_password" type="password" placeholder="Create a password"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Last 4 digits of Aadhaar</label><input id="a_aadhaar" placeholder="XXXX" maxlength="4"></div>
+          <div class="form-row"><label>PAN card number</label><input id="a_pan" placeholder="ABCDE1234F" maxlength="10"></div>
+        </div>
+        <div class="form-row"><label>State</label>
+          <select id="a_state"><option value="">Select your state</option><option>Delhi</option><option>Maharashtra</option><option>Uttar Pradesh</option><option>West Bengal</option><option>Tamil Nadu</option><option>Assam</option><option>Bihar</option><option>Rajasthan</option><option>Other</option></select>
+        </div>
+      </div>
+      <button class="btn btn-blue btn-full" onclick="applyStep1()">Continue to cause details →</button>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-form" id="aform-2">
+      <div class="form-section"><div class="form-section-title">Your cause</div>
+        <div class="form-row"><label>Category of need</label>
+          <select id="a_category" onchange="updateCauseHint()">
+            <option value="">Select category</option>
+            <option value="medical">Medical treatment</option>
+            <option value="education">Education fees</option>
+            <option value="disaster">Natural disaster / fire relief</option>
+            <option value="livelihood">Livelihood / job loss</option>
+            <option value="disability">Disability support</option>
+          </select>
+        </div>
+        <div id="causeHintBox" style="display:none" class="alert alert-warning"><span class="alert-icon">📋</span><span id="causeHintText"></span></div>
+        <div class="form-row"><label>Campaign headline (shown to donors)</label><input id="a_title" placeholder="e.g. Heart surgery for my daughter Aanya, 5"></div>
+        <div class="form-row"><label>Full description of your situation</label><textarea id="a_desc" placeholder="Describe your situation honestly and in detail — what happened, who is affected, and exactly why you need support. Reviewers will cross-check this against your documents."></textarea></div>
+        <div class="form-grid">
+          <div class="form-row"><label>Monthly household income (₹)</label><div class="input-group"><span class="input-prefix">₹</span><input id="a_income" type="number" placeholder="e.g. 12000" oninput="recalcScore()"></div></div>
+          <div class="form-row"><label>Number of dependants</label><input id="a_dependants" type="number" placeholder="e.g. 4" min="0" oninput="recalcScore()"></div>
+        </div>
+        <div class="form-row"><label>Amount needed (₹) — reviewers may adjust this</label><div class="input-group"><span class="input-prefix">₹</span><input id="a_amount" type="number" placeholder="e.g. 150000"></div></div>
+        <div class="form-grid">
+          <div class="form-row"><label>Voucher 1 — name</label><input id="a_v1name" placeholder="Full name"></div>
+          <div class="form-row"><label>Voucher 1 — mobile</label><input id="a_v1mob" placeholder="+91"></div>
+        </div>
+        <div class="form-grid">
+          <div class="form-row"><label>Voucher 2 — name</label><input id="a_v2name" placeholder="Full name"></div>
+          <div class="form-row"><label>Voucher 2 — mobile</label><input id="a_v2mob" placeholder="+91"></div>
+        </div>
+      </div>
+      <div id="scorePreview" style="display:none" class="need-score-box">
+        <div style="font-size:13px;color:var(--blue);margin-bottom:.25rem">Estimated need score</div>
+        <div class="need-score-num" id="scoreNum">-</div>
+        <div style="font-size:13px;color:var(--text-secondary);margin-top:.5rem">Reviewers may adjust this based on document quality and field verification.</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button class="btn btn-outline" onclick="goApplyStep(1)" style="flex:1">← Back</button>
+        <button class="btn btn-blue" onclick="applyStep2()" style="flex:2">Continue to documents →</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-form" id="aform-3">
+      <div class="form-section"><div class="form-section-title">Supporting documents</div>
+        <div class="alert alert-warning"><span class="alert-icon">⚠</span> Upload PDF or image files (max 10 MB each). Tampered documents will fail AI check and your application will be rejected.</div>
+        <div class="form-row" style="margin-top:1rem"><label>Aadhaar card copy (mandatory)</label><input type="file" id="doc_aadhaar" accept=".pdf,.jpg,.jpeg,.png"></div>
+        <div class="form-row"><label>Income certificate</label><input type="file" id="doc_income" accept=".pdf,.jpg,.jpeg,.png"></div>
+        <div class="form-row"><label>Cause-specific document (medical report / admission letter / FIR etc.)</label><input type="file" id="doc_cause" accept=".pdf,.jpg,.jpeg,.png"></div>
+        <div class="form-row"><label>Vendor / hospital details (name, account number for direct payment)</label><input id="a_vendor" placeholder="e.g. Fortis Hospital, New Delhi"></div>
+        <div class="form-row"><label>Vendor account / portal reference</label><input id="a_vendor_acc" placeholder="e.g. FORTIS-DEL-001 or hospital bill account number"></div>
+      </div>
+      <div class="alert alert-danger"><span class="alert-icon">⚖</span> By submitting you declare all information is truthful. False declarations are a criminal offence under IPC Section 420.</div>
+      <div style="display:flex;gap:10px;margin-top:1rem">
+        <button class="btn btn-outline" onclick="goApplyStep(2)" style="flex:1">← Back</button>
+        <button class="btn btn-primary btn-full" id="submitApplyBtn" onclick="submitApplication()" style="flex:2">Submit application</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CAMPAIGN DETAIL -->
+<div class="page" id="page-campaign-detail">
+  <div class="campaign-detail-hero">
+    <div class="container">
+      <div id="campDetailContent">Loading…</div>
+    </div>
+  </div>
+  <div class="container section">
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <div id="campDetailBody"></div>
+      </div>
+      <div>
+        <div class="card" id="donateWidget">
+          <h3 style="font-size:1.1rem;margin-bottom:1rem">Support this cause</h3>
+          <div id="donateStep1">
+            <div class="amount-chips">
+              <button class="amount-chip" onclick="selectAmount(100,this)">₹100</button>
+              <button class="amount-chip selected" onclick="selectAmount(500,this)">₹500</button>
+              <button class="amount-chip" onclick="selectAmount(1000,this)">₹1,000</button>
+              <button class="amount-chip" onclick="selectAmount(5000,this)">₹5,000</button>
+              <button class="amount-chip" onclick="selectAmount(0,this)">Other</button>
+            </div>
+            <div id="customAmountRow" style="display:none" class="form-row"><label>Amount (₹)</label><div class="input-group"><span class="input-prefix">₹</span><input type="number" id="customAmount" placeholder="Enter amount"></div></div>
+            <div class="form-row"><label>Your name</label><input id="don_name" placeholder="Your full name"></div>
+            <div class="form-row"><label>Email</label><input id="don_email" type="email" placeholder="you@example.com"></div>
+            <div class="form-row"><label>Mobile (for OTP)</label><input id="don_mobile" type="tel" placeholder="+91"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:1rem"><input type="checkbox" id="don_anon" style="width:auto"><label for="don_anon" style="margin:0;font-weight:400;color:var(--text-secondary)">Donate anonymously</label></div>
+            <div class="alert alert-info"><span class="alert-icon">🔒</span><small>Your donation goes into escrow. Released only after vendor invoice confirmed.</small></div>
+            <button class="btn btn-primary btn-full" id="donateBtn" onclick="initiateDonation()">Donate ₹500 securely →</button>
+          </div>
+          <div id="donateStep2" style="display:none">
+            <div class="alert alert-success"><span class="alert-icon">✓</span>OTP sent to your mobile. Enter it below to confirm.</div>
+            <div class="form-row"><label>6-digit OTP</label><input id="otpInput" placeholder="Enter OTP" maxlength="6" style="text-align:center;font-size:18px;letter-spacing:4px"></div>
+            <div id="demoOtpHint" class="alert alert-warning" style="font-size:12px"><span class="alert-icon">🧪</span><span id="demoOtpText"></span></div>
+            <button class="btn btn-primary btn-full" onclick="verifyDonationOtp()">Confirm donation</button>
+          </div>
+          <div id="donateStep3" style="display:none">
+            <div style="text-align:center;padding:1.5rem 0">
+              <div style="font-size:3rem;margin-bottom:.5rem">✅</div>
+              <h3 style="font-size:1.2rem">Thank you!</h3>
+              <p style="color:var(--text-secondary);margin-top:.5rem" id="donateSuccessMsg">Your donation is securely in escrow.</p>
+              <div class="badge badge-success" style="margin-top:1rem" id="donateRefBadge"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:1rem">
+          <h4 style="font-size:14px;font-weight:600;margin-bottom:1rem">Recent donors</h4>
+          <ul class="donor-list" id="donorList"><li style="color:var(--text-muted);font-size:13px">Loading…</li></ul>
+        </div>
+        <div style="margin-top:1rem">
+          <button class="btn btn-danger btn-sm" onclick="openModal('flagModal')">🚩 Flag this campaign</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="page" id="page-admin">
+  <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:1.5rem 0">
+    <div class="container"><h1 style="font-size:1.6rem">Admin dashboard</h1></div>
+  </div>
+  <div class="container section">
+    <div style="display:flex;gap:1.5rem;align-items:flex-start">
+      <div class="admin-sidebar">
+        <div class="admin-nav-item active" id="an-overview" onclick="adminTab('overview')">📊 Overview</div>
+        <div class="admin-nav-item" id="an-pending" onclick="adminTab('pending')">🕐 Pending review</div>
+        <div class="admin-nav-item" id="an-active" onclick="adminTab('active')">✅ Active campaigns</div>
+        <div class="admin-nav-item" id="an-users" onclick="adminTab('users')">👥 Users</div>
+        <div class="admin-nav-item" id="an-disburse" onclick="adminTab('disburse')">💸 Disbursements</div>
+        <div class="admin-nav-item" id="an-audit" onclick="adminTab('audit')">📋 Audit log</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <!-- Overview -->
+        <div id="at-overview">
+          <div class="grid-4" id="adminMetrics" style="margin-bottom:1.5rem">
+            <div class="metric-card"><div class="metric-num" id="am-raised">-</div><div class="metric-label">Total raised</div></div>
+            <div class="metric-card"><div class="metric-num" id="am-disbursed">-</div><div class="metric-label">Disbursed</div></div>
+            <div class="metric-card"><div class="metric-num" id="am-pending">-</div><div class="metric-label">Pending campaigns</div></div>
+            <div class="metric-card"><div class="metric-num" id="am-flags">-</div><div class="metric-label">Recent flags</div></div>
+          </div>
+          <div class="card">
+            <h3 style="font-size:1rem;margin-bottom:1rem">Quick actions</h3>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-outline btn-sm" onclick="adminTab('pending')">Review pending applications</button>
+              <button class="btn btn-outline btn-sm" onclick="adminTab('disburse')">Create disbursement</button>
+              <button class="btn btn-outline btn-sm" onclick="adminTab('users')">Verify users</button>
+            </div>
+          </div>
+        </div>
+        <!-- Pending -->
+        <div id="at-pending" style="display:none">
+          <h3 style="font-size:1rem;margin-bottom:1rem">Applications awaiting review</h3>
+          <div id="pendingList">Loading…</div>
+        </div>
+        <!-- Active -->
+        <div id="at-active" style="display:none">
+          <h3 style="font-size:1rem;margin-bottom:1rem">Active campaigns</h3>
+          <div id="activeList">Loading…</div>
+        </div>
+        <!-- Users -->
+        <div id="at-users" style="display:none">
+          <h3 style="font-size:1rem;margin-bottom:1rem">All users</h3>
+          <div id="usersList">Loading…</div>
+        </div>
+        <!-- Disburse -->
+        <div id="at-disburse" style="display:none">
+          <h3 style="font-size:1rem;margin-bottom:1rem">Record a disbursement</h3>
+          <div class="card">
+            <div class="form-row"><label>Campaign</label><select id="d_campaign"><option value="">Select campaign…</option></select></div>
+            <div class="form-grid">
+              <div class="form-row"><label>Amount (₹)</label><input id="d_amount" type="number" placeholder="e.g. 150000"></div>
+              <div class="form-row"><label>Vendor name</label><input id="d_vendor" placeholder="e.g. Fortis Hospital"></div>
+            </div>
+            <div class="form-grid">
+              <div class="form-row"><label>Vendor reference</label><input id="d_vendor_ref" placeholder="e.g. FORTIS-PAY-001"></div>
+              <div class="form-row"><label>Invoice number</label><input id="d_invoice" placeholder="e.g. FH-2026-001"></div>
+            </div>
+            <div class="form-row"><label>Description</label><textarea id="d_desc" placeholder="What was this payment for?"></textarea></div>
+            <button class="btn btn-primary" onclick="submitDisbursement()">Record disbursement</button>
+          </div>
+          <h3 style="font-size:1rem;margin:1.5rem 0 1rem">Disbursement history</h3>
+          <div class="card" style="padding:0;overflow:hidden"><div class="table-wrap"><table><thead><tr><th>Date</th><th>Campaign</th><th>Amount</th><th>Vendor</th><th>Invoice</th></tr></thead><tbody id="disbHistory"></tbody></table></div></div>
+        </div>
+        <!-- Audit -->
+        <div id="at-audit" style="display:none">
+          <h3 style="font-size:1rem;margin-bottom:1rem">Audit log (last 100 events)</h3>
+          <div class="card" style="padding:0;overflow:hidden"><div class="table-wrap"><table><thead><tr><th>Time</th><th>Type</th><th>Action</th><th>Details</th></tr></thead><tbody id="auditBody"></tbody></table></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODALS ══ -->
+<!-- Login -->
+<div class="modal-backdrop" id="loginModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('loginModal')">✕</button>
+    <h2 class="modal-title">Sign in</h2>
+    <p class="modal-subtitle">Welcome back to HopeGive</p>
+    <div class="form-row"><label>Email</label><input id="l_email" type="email" placeholder="you@example.com"></div>
+    <div class="form-row"><label>Password</label><input id="l_password" type="password" placeholder="Your password"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()" style="margin-top:.5rem">Sign in</button>
+    <div class="modal-footer"><span style="font-size:13px;color:var(--text-secondary)">No account?</span><button class="btn btn-outline btn-sm" onclick="closeModal('loginModal');openModal('registerModal')">Create account</button></div>
+    <div class="alert alert-info" style="margin-top:1rem;font-size:12px"><span class="alert-icon">💡</span>Demo: admin@hopegive.in / admin123</div>
+  </div>
+</div>
+
+<!-- Register -->
+<div class="modal-backdrop" id="registerModal">
+  <div class="modal modal-lg">
+    <button class="modal-close" onclick="closeModal('registerModal')">✕</button>
+    <h2 class="modal-title">Create account</h2>
+    <p class="modal-subtitle">Join as a donor or applicant</p>
+    <div style="display:flex;gap:8px;margin-bottom:1.5rem">
+      <button class="btn" id="role-donor" onclick="setRegisterRole('donor')" style="flex:1;border:2px solid var(--blue);background:var(--blue-light);color:var(--blue)">💝 I want to donate</button>
+      <button class="btn" id="role-applicant" onclick="setRegisterRole('applicant')" style="flex:1;border:2px solid var(--border-strong);background:transparent">🙏 I need help</button>
+    </div>
+    <input type="hidden" id="r_role" value="donor">
+    <div class="form-grid">
+      <div class="form-row"><label>Full name</label><input id="r_name" placeholder="Your full name"></div>
+      <div class="form-row"><label>Email</label><input id="r_email" type="email" placeholder="you@example.com"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-row"><label>Mobile</label><input id="r_mobile" type="tel" placeholder="+91"></div>
+      <div class="form-row"><label>Password</label><input id="r_password" type="password" placeholder="Min 8 characters"></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doRegister()" style="margin-top:.5rem">Create account</button>
+    <div class="modal-footer"><span style="font-size:13px;color:var(--text-secondary)">Already a member?</span><button class="btn btn-outline btn-sm" onclick="closeModal('registerModal');openModal('loginModal')">Sign in</button></div>
+  </div>
+</div>
+
+<!-- Flag -->
+<div class="modal-backdrop" id="flagModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('flagModal')">✕</button>
+    <h2 class="modal-title">Flag this campaign</h2>
+    <p class="modal-subtitle">Flags trigger an immediate review. Three flags pause the campaign.</p>
+    <div class="form-row"><label>Reason for flag</label><textarea id="flagReason" placeholder="Describe why you believe this campaign may be fraudulent or inaccurate…"></textarea></div>
+    <button class="btn btn-danger btn-full" onclick="submitFlag()">Submit flag</button>
+  </div>
+</div>
+
+<!-- Approve Campaign -->
+<div class="modal-backdrop" id="approveModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('approveModal')">✕</button>
+    <h2 class="modal-title">Approve campaign</h2>
+    <p class="modal-subtitle" id="approveModalSub">—</p>
+    <input type="hidden" id="approveModalId">
+    <div class="form-row"><label>Approved amount (₹)</label><input id="approve_amount" type="number"></div>
+    <div class="form-row"><label>Need score (0–100)</label><input id="approve_score" type="number" min="0" max="100"></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-danger btn-sm" onclick="reviewCampaign('reject')">Reject</button>
+      <button class="btn btn-primary btn-full" onclick="reviewCampaign('approve')">Approve & make live</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast"></div>
+
+<!-- Link to external JS script -->
+<script src="js/app.js"></script>
+</body>
+</html>
